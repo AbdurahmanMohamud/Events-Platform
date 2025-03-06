@@ -2,7 +2,7 @@
   "name": "events-platform",
   "version": "1.0.0",
   "description": "",
-  "main": "backend/app.js",
+  "main": "./backend/listen.js",
   "scripts": {
     "setup-dbs": "psql -f ./backend/db/setup.sql",
     "seed": "node ./backend/db/seeds/run-seed.js",

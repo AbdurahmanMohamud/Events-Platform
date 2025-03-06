@@ -21,7 +21,7 @@ describe("Invalid Endpoint", () => {
 });
 
 describe("GET: /api/events", () => {
-  test("GET: 200 - Responds with an array of events with required properties", () => {
+  test.only("GET: 200 - Responds with an array of events with required properties", () => {
     return request(app)
       .get("/api/events")
       .expect(200)
