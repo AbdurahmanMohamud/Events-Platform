@@ -1,3 +1,5 @@
-export const getAllEvents = (req,res)=>{};
+const getAllEvents = (req, res) => {};
 
-export const postEvent = (req,res) => {}
+const postEvent = (req, res) => {};
+
+module.exports = { getAllEvents, postEvent };

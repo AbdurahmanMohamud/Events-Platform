@@ -1,10 +1,10 @@
-import express from "express";
-import helmet from "helmet";
-import morgan from "morgan";
-import cors from "cors";
-import dotenv from "dotenv"
+const express = require("express");
+const helmet = require("helmet");
+const morgan = require("morgan");
+const cors = require("cors");
+const dotenv = require("dotenv");
 
-import eventRoutes from "./routes/eventRoutes.js"
+const eventRoutes = require("./routes/eventRoutes.js");
 
 dotenv.config();
 
@@ -16,8 +16,8 @@ app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 
-app.use("/api/events", eventRoutes)
+app.use("/api/events", eventRoutes);
 
 app.listen(PORT, () => {
-  console.log("server is listening on port "+PORT);
+  console.log("server is listening on port " + PORT);
 });
