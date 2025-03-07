@@ -1,15 +1,27 @@
-const { findAllEvents } = require("../models/events.models.js");
+const { fetchAllEvents, fetchEventById, insertEvent, removeEvent } = require("../models/eventsModels");
 
 const getAllEvents = (req, res, next) => {
-  findAllEvents()
-    .then((events) => {
-      res.status(200).send(articles);
-    })
-    .catch((err) => {
-      next(err);
-    });
+  fetchAllEvents()
+    .then((events) => res.status(200).send({ events }))
+    .catch(next);
 };
 
-const postEvent = (req, res, next) => {};
+const getEventById = (req, res, next) => {
+  fetchEventById(req.params.event_id)
+    .then((event) => res.status(200).send({ event }))
+    .catch(next);
+};
 
-module.exports = { getAllEvents, postEvent };
+const createEvent = (req, res, next) => {
+  insertEvent(req.body)
+    .then((event) => res.status(201).send({ event }))
+    .catch(next);
+};
+
+const deleteEvent = (req, res, next) => {
+  removeEvent(req.params.event_id)
+    .then(() => res.sendStatus(204))
+    .catch(next);
+};
+
+module.exports = { getAllEvents, getEventById, createEvent, deleteEvent };

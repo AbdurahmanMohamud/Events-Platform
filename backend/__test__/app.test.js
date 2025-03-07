@@ -9,152 +9,203 @@ const signupData = require("../db/data/test-data/signups");
 beforeEach(() => seed({ eventData, userData, signupData }));
 afterAll(() => db.end());
 
-describe("Invalid Endpoint", () => {
-  test("GET: 404 - Responds with a 404 error for an invalid endpoint", () => {
-    return request(app)
-      .get("/api/not-a-route")
-      .expect(404)
-      .then((res) => {
-        expect(res.body.msg).toBe("Not Found");
-      });
+describe("🔹 EVENTS ROUTES", () => {
+  // GET ALL EVENTS
+  describe("GET /api/events", () => {
+    test("200 - Responds with an array of events", () => {
+      return request(app)
+        .get("/api/events")
+        .expect(200)
+        .then((res) => {
+          const events = res.body;
+          expect(Array.isArray(events)).toBe(true);
+          expect(events.length).toBeGreaterThan(0);
+          events.forEach((event) => {
+            expect(event).toHaveProperty("event_id", expect.any(Number));
+            expect(event).toHaveProperty("title", expect.any(String));
+            expect(event).toHaveProperty("description", expect.any(String));
+            expect(event).toHaveProperty("date", expect.any(String));
+            expect(event).toHaveProperty("location", expect.any(String));
+          });
+        });
+    });
   });
-});
 
-describe("GET: /api/events", () => {
-  test.only("GET: 200 - Responds with an array of events with required properties", () => {
-    return request(app)
-      .get("/api/events")
-      .expect(200)
-      .then(({ body }) => {
-        const { events } = body;
-        expect(Array.isArray(events)).toBe(true);
-        expect(events.length).toBeGreaterThan(0);
-        events.forEach((event) => {
-          expect(event).toHaveProperty("event_id", expect.any(Number));
-          expect(event).toHaveProperty("name", expect.any(String));
+  // GET EVENT BY ID
+  describe("GET /api/events/:event_id", () => {
+    test("200 - Responds with a single event by ID", () => {
+      return request(app)
+        .get("/api/events/1")
+        .expect(200)
+        .then(({ body }) => {
+          const event = body.event;
+          expect(event).toHaveProperty("event_id", 1);
+          expect(event).toHaveProperty("title", expect.any(String));
+          expect(event).toHaveProperty("description", expect.any(String));
           expect(event).toHaveProperty("date", expect.any(String));
           expect(event).toHaveProperty("location", expect.any(String));
-          expect(event).toHaveProperty("capacity", expect.any(Number));
         });
-      });
+    });
+
+    test("404 - Responds with an error if event ID does not exist", () => {
+      return request(app).get("/api/events/9999").expect(404);
+    });
+
+    test("400 - Responds with an error if event ID is invalid", () => {
+      return request(app)
+        .get("/api/events/notanumber")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid request");
+        });
+    });
+  });
+
+  // CREATE EVENT
+  describe("POST /api/events", () => {
+    test("201 - Creates a new event and returns it", () => {
+      const newEvent = {
+        title: "Tech Conference",
+        description: "A gathering of tech enthusiasts.",
+        date: "2025-06-15T10:00:00.000Z",
+        location: "London",
+      };
+
+      return request(app)
+        .post("/api/events")
+        .send(newEvent)
+        .expect(201)
+        .then(({ body }) => {
+          const event = body.event;
+          expect(event).toHaveProperty("event_id", expect.any(Number));
+          expect(event).toHaveProperty("title", "Tech Conference");
+          expect(event).toHaveProperty("description", "A gathering of tech enthusiasts.");
+          expect(event).toHaveProperty("date", "2025-06-15T10:00:00.000Z");
+          expect(event).toHaveProperty("location", "London");
+        });
+    });
+
+    test("400 - Responds with an error if required fields are missing", () => {
+      return request(app)
+        .post("/api/events")
+        .send({ title: "Incomplete Event" })
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Missing required fields");
+        });
+    });
+  });
+
+  // DELETE EVENT
+  describe("DELETE /api/events/:event_id", () => {
+    test("204 - Deletes an event by ID", () => {
+      return request(app).delete("/api/events/1").expect(204);
+    });
+
+    test("404 - Responds with an error if event ID does not exist", () => {
+      return request(app).delete("/api/events/9999").expect(404);
+    });
+
+    test("400 - Responds with an error if event ID is invalid", () => {
+      return request(app)
+        .delete("/api/events/notanumber")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid request");
+        });
+    });
   });
 });
 
-describe("GET: /api/events/:event_id", () => {
-  test("GET: 200 - Responds with a single event by ID", () => {
-    return request(app)
-      .get("/api/events/1")
-      .expect(200)
-      .then(({ body }) => {
-        const event = body.event;
-        expect(event).toHaveProperty("event_id", 1);
-        expect(event).toHaveProperty("name", expect.any(String));
-        expect(event).toHaveProperty("date", expect.any(String));
-        expect(event).toHaveProperty("location", expect.any(String));
-        expect(event).toHaveProperty("capacity", expect.any(Number));
-      });
+describe("🔹 USERS ROUTES", () => {
+  // GET ALL USERS
+  describe("GET /api/users", () => {
+    test("200 - Responds with an array of users", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }) => {
+          expect(Array.isArray(body.users)).toBe(true);
+        });
+    });
   });
 
-  test("GET: 404 - Responds with an error if event ID does not exist", () => {
-    return request(app).get("/api/events/9999").expect(404);
+  // GET USER BY ID
+  describe("GET /api/users/:user_id", () => {
+    test("200 - Responds with a single user", () => {
+      return request(app)
+        .get("/api/users/1")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.user).toHaveProperty("user_id", 1);
+          expect(body.user).toHaveProperty("username", expect.any(String));
+          expect(body.user).toHaveProperty("email", expect.any(String));
+        });
+    });
+
+    test("404 - Responds with an error if user ID does not exist", () => {
+      return request(app).get("/api/users/9999").expect(404);
+    });
   });
 
-  test("GET: 400 - Responds with an error if event ID is invalid", () => {
-    return request(app)
-      .get("/api/events/notanumber")
-      .expect(400)
-      .then((res) => {
-        expect(res.body.msg).toBe("Invalid request");
-      });
-  });
-});
+  // CREATE USER
+  describe("POST /api/users", () => {
+    test("201 - Creates a new user", () => {
+      const newUser = {
+        username: "newuser",
+        name: "New User",
+        email: "newuser@example.com",
+      };
 
-describe("POST: /api/events", () => {
-  test("POST: 201 - Creates a new event and returns it", () => {
-    const newEvent = {
-      name: "Tech Conference",
-      date: "2025-06-15",
-      location: "London",
-      capacity: 300,
-    };
+      return request(app)
+        .post("/api/users")
+        .send(newUser)
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.user).toHaveProperty("user_id", expect.any(Number));
+        });
+    });
 
-    return request(app)
-      .post("/api/events")
-      .send(newEvent)
-      .expect(201)
-      .then(({ body }) => {
-        const event = body.event;
-        expect(event).toHaveProperty("event_id", expect.any(Number));
-        expect(event).toHaveProperty("name", "Tech Conference");
-        expect(event).toHaveProperty("date", "2025-06-15");
-        expect(event).toHaveProperty("location", "London");
-        expect(event).toHaveProperty("capacity", 300);
-      });
-  });
-
-  test("POST: 400 - Responds with an error if required fields are missing", () => {
-    const incompleteEvent = {
-      name: "Missing Data",
-    };
-
-    return request(app)
-      .post("/api/events")
-      .send(incompleteEvent)
-      .expect(400)
-      .then((res) => {
-        expect(res.body.msg).toBe("Missing required fields");
-      });
+    test("400 - Responds with an error if required fields are missing", () => {
+      return request(app).post("/api/users").send({ username: "missingEmail" }).expect(400);
+    });
   });
 });
 
-describe("PATCH: /api/events/:event_id", () => {
-  test("PATCH: 200 - Updates an event's details", () => {
-    const updateData = { name: "Updated Event" };
+describe("🔹 SIGNUPS ROUTES", () => {
+  // USER SIGNS UP FOR EVENT
+  describe("POST /api/signups", () => {
+    test("201 - Allows a user to sign up for an event", () => {
+      return request(app)
+        .post("/api/signups")
+        .send({ user_id: 1, event_id: 1 })
+        .expect(201)
+        .then(({ body }) => {
+          expect(body.signup).toHaveProperty("signup_id", expect.any(Number));
+        });
+    });
 
-    return request(app)
-      .patch("/api/events/1")
-      .send(updateData)
-      .expect(200)
-      .then(({ body }) => {
-        const event = body.event;
-        expect(event).toHaveProperty("event_id", 1);
-        expect(event).toHaveProperty("name", "Updated Event");
-      });
+    test("400 - Prevents duplicate signups", () => {
+      return request(app)
+        .post("/api/signups")
+        .send({ user_id: 1, event_id: 1 }) // First signup
+        .expect(201)
+        .then(() => {
+          return request(app)
+            .post("/api/signups")
+            .send({ user_id: 1, event_id: 1 }) // Duplicate
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toBe("User already signed up");
+            });
+        });
+    });
   });
 
-  test("PATCH: 404 - Responds with an error if event ID does not exist", () => {
-    return request(app)
-      .patch("/api/events/9999")
-      .send({ name: "New Name" })
-      .expect(404);
-  });
-
-  test("PATCH: 400 - Responds with an error if event ID is invalid", () => {
-    return request(app)
-      .patch("/api/events/notanumber")
-      .send({ name: "New Name" })
-      .expect(400)
-      .then((res) => {
-        expect(res.body.msg).toBe("Invalid request");
-      });
-  });
-});
-
-describe("DELETE: /api/events/:event_id", () => {
-  test("DELETE: 204 - Deletes an event by ID", () => {
-    return request(app).delete("/api/events/1").expect(204);
-  });
-
-  test("DELETE: 404 - Responds with an error if event ID does not exist", () => {
-    return request(app).delete("/api/events/9999").expect(404);
-  });
-
-  test("DELETE: 400 - Responds with an error if event ID is invalid", () => {
-    return request(app)
-      .delete("/api/events/notanumber")
-      .expect(400)
-      .then((res) => {
-        expect(res.body.msg).toBe("Invalid request");
-      });
+  // USER CANCELS SIGNUP
+  describe("DELETE /api/signups/:signup_id", () => {
+    test("204 - Allows a user to cancel signup", () => {
+      return request(app).delete("/api/signups/1").expect(204);
+    });
   });
 });

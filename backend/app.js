@@ -1,20 +1,42 @@
 const express = require("express");
+const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const cors = require("cors");
 const dotenv = require("dotenv");
 
-const eventRoutes = require("./routes/eventRoutes.js");
+const eventRoutes = require("./routes/eventsRoutes");
+const userRoutes = require("./routes/usersRoutes");
+const signupRoutes = require("./routes/signupsRoutes");
 
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 9090;
 
+// Middleware
 app.use(express.json());
 app.use(cors());
 app.use(helmet());
 app.use(morgan("dev"));
 
+// Routes
 app.use("/api/events", eventRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/signups", signupRoutes);
 
-module.exports = app; 
+// Handle 404 errors for invalid endpoints
+app.all("*", (req, res) => {
+  res.status(404).send({ msg: "Not Found" });
+});
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  if (err.status) {
+    res.status(err.status).send({ msg: err.msg });
+  } else {
+    console.error(err);
+    res.status(500).send({ msg: "Internal Server Error" });
+  }
+});
+
+module.exports = app;
