@@ -1,6 +1,7 @@
 const { insertSignup, removeSignup } = require("../models/signupsModels");
 
 const signupUser = (req, res, next) => {
+
   insertSignup(req.body)
     .then((signup) => res.status(201).send({ signup }))
     .catch(next);

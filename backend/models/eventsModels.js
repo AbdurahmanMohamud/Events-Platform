@@ -16,9 +16,10 @@ const insertEvent = ({ title, description, date, location }) => {
   if (!title || !date || !location) {
     return Promise.reject({ status: 400, msg: "Missing required fields" });
   }
+  const formattedDate = new Date(date).toISOString();
   return db.query(
     "INSERT INTO events (title, description, date, location) VALUES ($1, $2, $3, $4) RETURNING *;",
-    [title, description, date, location]
+    [title, description, formattedDate, location]
   ).then(({ rows }) => rows[0]);
 };
 
