@@ -175,25 +175,26 @@ describe("🔹 USERS ROUTES", () => {
 describe("🔹 SIGNUPS ROUTES", () => {
   // USER SIGNS UP FOR EVENT
   describe("POST /api/signups", () => {
-    // test("201 - Allows a user to sign up for an event", () => {
-    //   return request(app)
-    //     .post("/api/signups")
-    //     .send({ user_id: 1, event_id: 1 })
-    //     .expect(201)
-    //     .then(({ body }) => {
-    //       expect(body.signup).toHaveProperty("signup_id", expect.any(Number));
-    //     });
-    // });
+    test("201 - Allows a user to sign up for an event", () => {
+      return request(app)
+        .post("/api/signups")
+        .send({ user_id: 1, event_id: 3 })
+        .expect(201)
+        .then(({ body }) => {
+          console.log(body)
+          expect(body.signup).toHaveProperty("signup_id", expect.any(Number));
+        });
+    });
 
     test("400 - Prevents duplicate signups", () => {
       return request(app)
         .post("/api/signups")
-        .send({ user_id: 1, event_id: 1 }) // First signup
+        .send({ user_id: 3, event_id: 1 }) // First signup
         .expect(201)
         .then(() => {
           return request(app)
             .post("/api/signups")
-            .send({ user_id: 1, event_id: 1 }) // Duplicate
+            .send({ user_id: 3, event_id: 1 }) // Duplicate
             .expect(400)
             .then(({ body }) => {
               expect(body.msg).toBe("User already signed up");
