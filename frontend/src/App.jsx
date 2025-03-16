@@ -1,19 +1,23 @@
-import { Routes,Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/HomePage";
+import EventDetails from "./pages/EventDetails";
+import CreateEvent from "./pages/CreateEvent";
+import UsersPage from "./pages/UsersPage";
+//import Dashboard from "./pages/Dashboard";
 import Navbar from "./components/Navbar";
-import HomePage from "./pages/HomePage";
-import EventPage from "./pages/EventPage"
 
 function App() {
   return (
-    <div className="min-h-screen bg-base-200 transition-colors duration-300">
-    
-    <Navbar/>
-    
+    <div>
+    <Navbar />
     <Routes>
-      <Route path="/" element={<HomePage/>}/>
-      <Route path ="/event/:id" element={<EventPage/>}/>
-    </Routes>
-    </div>
+        <Route path="/" element={<Home />} />
+        <Route path="/events/:event_id" element={<EventDetails />} />
+        <Route path="/create-event" element={<CreateEvent />} />
+        <Route path="/users-page" element={<UsersPage />} />
+        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+      </Routes>
+      </div>
   );
 }
 
