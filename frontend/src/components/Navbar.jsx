@@ -10,7 +10,7 @@ export default function Navbar() {
             <Link to="/" className="text-white hover:text-blue-300">Home</Link>
           </li>
           <li>
-            <Link to="/users-page" className="text-white hover:text-blue-300">SignUp</Link>
+            <Link to="/users-page" className="text-white hover:text-blue-300">Login</Link>
           </li>
          
         </ul>
