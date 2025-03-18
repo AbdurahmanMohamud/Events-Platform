@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-const HomePage = () => {
+const HomePage = ({ user, setUser }) => {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
@@ -12,8 +12,26 @@ const HomePage = () => {
       .catch((err) => console.error(err));
   }, []);
 
+  const handleLogout = () => {
+    setUser(null); // clears user state
+  };
+
   return (
-    <div className="p-6 space-y-4">
+    <div className="p-6 space-y-4 max-w-4xl mx-auto">
+      {user && (
+        <div className="flex justify-between items-center bg-green-100 p-4 rounded-xl shadow">
+          <p className="text-green-800 font-semibold">
+            Welcome, {user.name} 👋
+          </p>
+          <button
+            onClick={handleLogout}
+            className="text-sm text-red-500 underline"
+          >
+            Logout
+          </button>
+        </div>
+      )}
+
       <h1 className="text-3xl font-bold">Upcoming Events</h1>
       {events.length === 0 ? (
         <p>No events available.</p>
