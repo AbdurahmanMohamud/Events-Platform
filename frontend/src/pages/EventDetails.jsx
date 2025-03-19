@@ -22,7 +22,7 @@ export default function EventDetails({ user }) {
       })
       .catch((err) => {
         if (err.response?.status === 400) {
-          setError("You are already signed up for this event.");
+          setMessage("You are already signed up for this event.");
         } else {
           setMessage("Something went wrong, please try again.");
         }
