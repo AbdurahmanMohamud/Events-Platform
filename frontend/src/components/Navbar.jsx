@@ -9,35 +9,38 @@ export default function Navbar({ user, setUser }) {
   };
 
   return (
-    <nav className="flex justify-between items-center bg-gray-800 p-4 text-white">
+    <nav className="flex justify-between items-center bg-gray-900 p-4 text-white shadow-md">
       <div>
-        <Link to="/" className="font-bold text-xl">
+        <Link to="/" className="font-bold text-2xl hover:text-gray-300 transition duration-200">
           Events Platform
         </Link>
       </div>
-      <div className="space-x-4">
+      <div className="space-x-6 flex items-center">
         {user ? (
           <>
-            <span>Welcome, {user.username}!</span>
+            <span className="text-lg">Welcome, {user.username}!</span>
+            {/* Add Event button (Admin only) */}
             {user.is_admin && (
               <Link
                 to="/add-event"
-                className="bg-green-500 px-3 py-1 rounded hover:bg-green-600"
+                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition duration-300"
               >
-                Add-Event
+                Add Event
               </Link>
             )}
+            {/* Delete Event button (Admin only) */}
             {user.is_admin && (
               <Link
                 to="/delete-event"
-                className="bg-red-900 px-3 py-1 rounded hover:bg-red-600"
+                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition duration-300"
               >
-                delete events
+                Delete Events
               </Link>
             )}
+            {/* Logout button */}
             <button
               onClick={handleLogout}
-              className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
+              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300"
             >
               Logout
             </button>
@@ -45,7 +48,7 @@ export default function Navbar({ user, setUser }) {
         ) : (
           <Link
             to="/login"
-            className="bg-blue-500 px-3 py-1 rounded hover:bg-blue-600"
+            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300"
           >
             Login
           </Link>
