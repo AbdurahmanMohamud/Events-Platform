@@ -19,6 +19,22 @@ export default function Navbar({ user, setUser }) {
         {user ? (
           <>
             <span>Welcome, {user.username}!</span>
+            {user.is_admin && (
+              <Link
+                to="/add-event"
+                className="bg-green-500 px-3 py-1 rounded hover:bg-green-600"
+              >
+                Add-Event
+              </Link>
+            )}
+            {user.is_admin && (
+              <Link
+                to="/delete-event"
+                className="bg-red-900 px-3 py-1 rounded hover:bg-red-600"
+              >
+                delete events
+              </Link>
+            )}
             <button
               onClick={handleLogout}
               className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"

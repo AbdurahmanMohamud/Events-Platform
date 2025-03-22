@@ -8,7 +8,9 @@ import { useEffect, useState } from "react";
 import HomePage from "./pages/HomePage";
 import EventDetails from "./pages/EventDetails";
 import LoginPage from "./pages/loginPage"
-import SignupPage from "./pages/signupPage";;
+import SignupPage from "./pages/signupPage";
+import AddEvent from "./pages/AddEvent";
+import DeleteEvent from "./pages/DeleteEvents";
 import NavBar from "./components/Navbar";
 
 export default function App() {
@@ -45,7 +47,14 @@ export default function App() {
         />
         <Route path="/login" element={<LoginPage setUser={setUser} />} />
         <Route path="/signup" element={<SignupPage setUser={setUser} />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/add-event" element={<AddEvent />} />
+        <Route path="/delete-event" element={<DeleteEvent user={user} />} />
+        <Route
+  path="*"
+  element={
+    user ? <Navigate to="/" replace /> : <Navigate to="/login" replace />
+  }
+/>
       </Routes>
     </div>
   );

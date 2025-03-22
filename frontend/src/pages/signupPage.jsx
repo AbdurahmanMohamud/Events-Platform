@@ -8,17 +8,17 @@ export default function SignupPage({ setUser }) {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  
-  const newUser = {
-    username: username,
-    name: name,
-    email: email,
-  };
-console.log(newUser)
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    const newUser = {
+      username,
+      name,
+      email,
+    };
+    console.log(newUser);
     axios
-      .post("/api/users",newUser)
+      .post("/api/users", newUser)
       .then((res) => {
         setUser(res.data.user);
         navigate("/");

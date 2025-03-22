@@ -12,7 +12,8 @@ const seed = ({ userData, eventData, signupData }) => {
           user_id SERIAL PRIMARY KEY,
           username VARCHAR UNIQUE NOT NULL,
           name VARCHAR NOT NULL,
-          email VARCHAR UNIQUE NOT NULL
+          email VARCHAR UNIQUE NOT NULL,
+          is_admin BOOLEAN DEFAULT FALSE
         );`);
 
       return usersTablePromise;
@@ -24,7 +25,8 @@ const seed = ({ userData, eventData, signupData }) => {
           title VARCHAR NOT NULL,
           description TEXT,
           date TIMESTAMP NOT NULL,
-          location VARCHAR NOT NULL
+          location VARCHAR NOT NULL,
+          created_by INT REFERENCES users(user_id) ON DELETE SET NULL
         );`);
     })
     .then(() => {
@@ -38,20 +40,21 @@ const seed = ({ userData, eventData, signupData }) => {
     })
     .then(() => {
       const insertUsersQuery = format(
-        'INSERT INTO users (username, name, email) VALUES %L RETURNING *;',
-        userData.map(({ username, name, email }) => [username, name, email])
+        'INSERT INTO users (username, name, email, is_admin) VALUES %L RETURNING *;',
+        userData.map(({ username, name, email, is_admin = false }) => [username, name, email, is_admin])
       );
 
       return db.query(insertUsersQuery);
     })
     .then(() => {
       const insertEventsQuery = format(
-        'INSERT INTO events (title, description, date, location) VALUES %L RETURNING *;',
-        eventData.map(({ title, description, date, location }) => [
+        'INSERT INTO events (title, description, date, location, created_by) VALUES %L RETURNING *;',
+        eventData.map(({ title, description, date, location, created_by }) => [
           title,
           description,
           date,
           location,
+          created_by,
         ])
       );
 

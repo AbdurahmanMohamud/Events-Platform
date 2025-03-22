@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Added Link
 
 export default function LoginPage({ setUser }) {
   const [email, setEmail] = useState("");
@@ -11,7 +11,7 @@ export default function LoginPage({ setUser }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .get("/api/users") // Fetch all users
+      .get("/api/users")
       .then((res) => {
         const foundUser = res.data.users.find(
           (u) => u.email === email && u.username === username
@@ -43,9 +43,9 @@ export default function LoginPage({ setUser }) {
           />
         </div>
         <div>
-          <label className="block text-gray-700">username:</label>
+          <label className="block text-gray-700">Username:</label>
           <input
-            type="username"
+            type="text"
             className="w-full p-2 border rounded-xl"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -60,6 +60,15 @@ export default function LoginPage({ setUser }) {
           Login
         </button>
       </form>
+      <p className="mt-4 text-center">
+        Don&apos;t have an account?{" "}
+        <Link
+          to="/signup"
+          className="text-blue-600 hover:underline"
+        >
+          Sign up here
+        </Link>
+      </p>
     </div>
   );
 }
