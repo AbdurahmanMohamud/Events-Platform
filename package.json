@@ -4,6 +4,7 @@
   "description": "",
   "main": "./backend/listen.js",
   "scripts": {
+    "start": "node ./backend/listen.js",
     "setup-dbs": "psql -f ./backend/db/setup.sql",
     "seed-prod": "NODE_ENV=production npm run seed",
     "seed": "node ./backend/db/seeds/run-seed.js",
