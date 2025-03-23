@@ -34,7 +34,7 @@ export default function EventDetails({ user }) {
   return (
     <div className="max-w-2xl mx-auto mt-12 p-6 bg-white rounded-2xl shadow-xl space-y-4">
       <h1 className="text-3xl font-bold">{event.title}</h1>
-      <p>{event.description}</p>
+      <p className="break-words whitespace-normal">{event.description}</p>
       <p>
         <strong>Date:</strong> {event.date}
       </p>
@@ -50,4 +50,5 @@ export default function EventDetails({ user }) {
       {message && <p className="mt-2 text-green-600">{message}</p>}
     </div>
   );
+  
 }

@@ -13,7 +13,26 @@ const HomePage = ({ user, setUser }) => {
   }, []);
 
   const handleLogout = () => {
-    setUser(null); // clears user state
+    setUser(null);
+  };
+
+  const truncateText = (text, maxLength) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + "...";
+  };
+
+  const formatDateTime = (isoDate) => {
+    const date = new Date(isoDate);
+    const formattedDate = date.toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    const formattedTime = date.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    return `${formattedDate} at ${formattedTime}`;
   };
 
   return (
@@ -43,9 +62,9 @@ const HomePage = ({ user, setUser }) => {
               className="p-4 border rounded-xl shadow-md"
             >
               <h2 className="text-xl font-semibold">{event.title}</h2>
-              <p>{event.description}</p>
+              <p>{truncateText(event.description, 100)}</p>
               <p>
-                <strong>Date:</strong> {event.date}
+                <strong>Date & Time:</strong> {formatDateTime(event.date)}
               </p>
               <p>
                 <strong>Location:</strong> {event.location}
