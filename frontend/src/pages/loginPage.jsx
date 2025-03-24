@@ -6,10 +6,12 @@ export default function LoginPage({ setUser }) {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false); // New loading state
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when the login request starts
     axios
       .get("https://events-platform-iut7.onrender.com/api/users")
       .then((res) => {
@@ -25,6 +27,9 @@ export default function LoginPage({ setUser }) {
       })
       .catch(() => {
         setError("Something went wrong!");
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false after the request completes
       });
   };
 
@@ -53,19 +58,22 @@ export default function LoginPage({ setUser }) {
           />
         </div>
         {error && <p className="text-red-500">{error}</p>}
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700"
-        >
-          Login
-        </button>
+
+        {/* Loading text or spinner */}
+        {loading ? (
+          <p className="text-blue-600 text-center">Loading...</p> // Simple loading text
+        ) : (
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700"
+          >
+            Login
+          </button>
+        )}
       </form>
       <p className="mt-4 text-center">
         Don&apos;t have an account?{" "}
-        <Link
-          to="/signup"
-          className="text-blue-600 hover:underline"
-        >
+        <Link to="/signup" className="text-blue-600 hover:underline">
           Sign up here
         </Link>
       </p>

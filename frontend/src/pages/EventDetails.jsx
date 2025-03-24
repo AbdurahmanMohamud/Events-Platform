@@ -3,8 +3,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { gapi } from "gapi-script";
 
-const CLIENT_ID = "948056576491-35kekoma63mo980flnmpbu578rspepin.apps.googleusercontent.com";
+const CLIENT_ID =
+  "948056576491-35kekoma63mo980flnmpbu578rspepin.apps.googleusercontent.com";
+
 const SCOPES = "https://www.googleapis.com/auth/calendar.events";
+const DISCOVERY_DOCS = [
+  "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
+];
 
 export default function EventDetails({ user }) {
   const { event_id } = useParams();
@@ -14,7 +19,7 @@ export default function EventDetails({ user }) {
 
   useEffect(() => {
     axios
-      .get(`https://events-platform-iut7.onrender.com/api/events/${event_id}`)
+      .get(`/api/events/${event_id}`)
       .then((res) => setEvent(res.data.event))
       .catch((err) => console.error(err));
   }, [event_id]);
@@ -24,17 +29,25 @@ export default function EventDetails({ user }) {
       gapi.client
         .init({
           clientId: CLIENT_ID,
+          discoveryDocs: DISCOVERY_DOCS,
           scope: SCOPES,
         })
-        .then(() => setGapiLoaded(true))
-        .catch((err) => console.error("GAPI init error:", err));
+        .then(() => {
+          setGapiLoaded(true);
+          console.log("GAPI fully initialized (with Calendar API)");
+        })
+        .catch((error) => {
+          console.error("Error initializing gapi client:", error);
+        });
     });
   }, []);
 
   const handleSignup = () => {
     axios
-      .post("https://events-platform-iut7.onrender.com/api/signups", { user_id: user.user_id, event_id: event.event_id })
-      .then(() => setMessage("You have successfully signed up for this event!"))
+      .post("/api/signups", { user_id: user.user_id, event_id: event.event_id })
+      .then(() => {
+        setMessage("You have successfully signed up for this event!");
+      })
       .catch((err) => {
         if (err.response?.status === 400) {
           setMessage("You are already signed up for this event.");
@@ -45,43 +58,68 @@ export default function EventDetails({ user }) {
   };
 
   const addToGoogleCalendar = () => {
+    if (!event) {
+      setMessage("Event details not available.");
+      return;
+    }
+
     const auth = gapi.auth2.getAuthInstance();
 
-    const createEvent = () => {
-      const start = new Date(event.date);
-      const end = new Date(start.getTime() + 60 * 60 * 1000); // 1 hour later
-
-      const eventDetails = {
-        summary: event.title,
-        description: event.description,
-        start: {
-          dateTime: start.toISOString(),
-          timeZone: "UTC",
-        },
-        end: {
-          dateTime: end.toISOString(),
-          timeZone: "UTC",
-        },
-        location: event.location,
-      };
-
-      gapi.client.calendar.events
-        .insert({
-          calendarId: "primary",
-          resource: eventDetails,
-        })
-        .then(() => setMessage("Event added to your Google Calendar!"))
-        .catch((err) => {
-          console.error("Calendar insert error:", err);
-          setMessage("Failed to add event to Google Calendar.");
-        });
-    };
-
     if (!auth.isSignedIn.get()) {
-      auth.signIn().then(createEvent);
+      auth
+        .signIn()
+        .then(createEvent)
+        .catch((error) => {
+          console.error("Error signing in:", error);
+          setMessage("Sign-in failed.");
+        });
     } else {
       createEvent();
     }
+  };
+
+  const createEvent = () => {
+    if (!gapi.client.calendar) {
+      console.error("Google Calendar API is not loaded properly.");
+      setMessage("Google Calendar API is not ready.");
+      return;
+    }
+
+    const eventDetails = {
+      summary: event.title,
+      description: event.description,
+      start: {
+        dateTime: event.date,
+        timeZone: "UTC",
+      },
+      end: {
+        dateTime: new Date(
+          new Date(event.date).getTime() + 60 * 60 * 1000
+        ).toISOString(),
+        timeZone: "UTC",
+      },
+      location: event.location,
+    };
+
+    gapi.client.calendar.events
+      .insert({
+        calendarId: "primary",
+        resource: eventDetails,
+      })
+      .then(() => {
+        setMessage("Event added to your Google Calendar!");
+      })
+      .catch((error) => {
+        console.error("Error adding event to Google Calendar:", error);
+        setMessage("Failed to add event to Google Calendar.");
+      });
+  };
+
+  const handleSignOut = () => {
+    const auth = gapi.auth2.getAuthInstance();
+    auth.signOut().then(() => {
+      setMessage("Signed out of Google.");
+    });
   };
 
   const formatDate = (dateString) => {
@@ -109,6 +147,7 @@ export default function EventDetails({ user }) {
         <strong>Location:</strong> {event.location}
       </p>
 
+      {/* Sign Up Button */}
       <button
         onClick={handleSignup}
         className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
@@ -116,15 +155,21 @@ export default function EventDetails({ user }) {
         Sign Up
       </button>
 
+      {/* Add to Calendar Button */}
       <button
         onClick={addToGoogleCalendar}
         disabled={!gapiLoaded}
-        className="mt-4 ml-4 px-6 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700"
+        className="mt-4 px-6 py-2 bg-green-600 text-white rounded-xl hover:bg-green-700"
       >
         Add to Google Calendar
       </button>
 
       {message && <p className="mt-2 text-green-600">{message}</p>}
+
+      {/* Sign Out Button */}
+      <button onClick={handleSignOut} className="mt-2 text-red-500 underline">
+        Sign out of Google
+      </button>
     </div>
   );
 }
