@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { gapi } from "gapi-script";
 
-const CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com";
+const CLIENT_ID = "948056576491-35kekoma63mo980flnmpbu578rspepin.apps.googleusercontent.com";
 const SCOPES = "https://www.googleapis.com/auth/calendar.events";
 
 export default function EventDetails({ user }) {
