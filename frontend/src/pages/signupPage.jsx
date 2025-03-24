@@ -18,7 +18,7 @@ export default function SignupPage({ setUser }) {
     };
     console.log(newUser);
     axios
-      .post("/api/users", newUser)
+      .post("https://events-platform-iut7.onrender.com/api/users", newUser)
       .then((res) => {
         setUser(res.data.user);
         navigate("/");

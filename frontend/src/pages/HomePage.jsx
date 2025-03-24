@@ -7,7 +7,7 @@ const HomePage = ({ user, setUser }) => {
 
   useEffect(() => {
     axios
-      .get("/api/events")
+      .get("https://events-platform-iut7.onrender.com/api/events")
       .then((res) => setEvents(res.data.events))
       .catch((err) => console.error(err));
   }, []);

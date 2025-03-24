@@ -10,7 +10,7 @@ export default function DeleteEvent({ user }) {
   // Fetch all events on page load
   useEffect(() => {
     axios
-      .get("/api/events")
+      .get("https://events-platform-iut7.onrender.com/api/events")
       .then((response) => {
         setEvents(response.data.events); // Ensure that the structure of your response contains 'events'
       })
@@ -24,7 +24,7 @@ export default function DeleteEvent({ user }) {
     const confirmDelete = window.confirm("Are you sure you want to delete this event?");
     if (confirmDelete) {
       axios
-        .delete(`/api/events/${event_id}`)
+        .delete(`https://events-platform-iut7.onrender.com/api/events/${event_id}`)
         .then(() => {
           // Remove the event from the list after deletion
           setEvents((prevEvents) =>

@@ -11,7 +11,7 @@ export default function LoginPage({ setUser }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .get("/api/users")
+      .get("https://events-platform-iut7.onrender.com/api/users")
       .then((res) => {
         const foundUser = res.data.users.find(
           (u) => u.email === email && u.username === username

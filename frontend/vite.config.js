@@ -9,4 +9,5 @@ export default defineConfig({
       "/api": "https://events-platform-iut7.onrender.com/",
     },
   },
+  base:'/Events-Platform/'
 });

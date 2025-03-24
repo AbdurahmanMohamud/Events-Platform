@@ -24,7 +24,7 @@ export default function AddEvent() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/events", event);
+      const response = await axios.post("https://events-platform-iut7.onrender.com/api/events", event);
       const newEvent = response.data;  // The full event object returned from the backend
 
       // Show the popup after event creation
