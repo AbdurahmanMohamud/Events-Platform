@@ -98,7 +98,7 @@ The app is deployed with the frontend hosted on GitHub Pages and the backend on 
 
 #### Go to EventDetails.jsx which is in the pages folder in the frontend folder and add your own google client id the client id variable on line 6
 
-#### Now run this in the terminal:
+#### Now run this in a new terminal:
 
 > npm run dev
 
