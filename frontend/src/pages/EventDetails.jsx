@@ -19,7 +19,7 @@ export default function EventDetails({ user }) {
 
   useEffect(() => {
     axios
-      .get(`/api/events/${event_id}`)
+      .get(`https://events-platform-iut7.onrender.com/api/events/${event_id}`)
       .then((res) => setEvent(res.data.event))
       .catch((err) => console.error(err));
   }, [event_id]);
@@ -44,7 +44,7 @@ export default function EventDetails({ user }) {
 
   const handleSignup = () => {
     axios
-      .post("/api/signups", { user_id: user.user_id, event_id: event.event_id })
+      .post("https://events-platform-iut7.onrender.com/api/signups", { user_id: user.user_id, event_id: event.event_id })
       .then(() => {
         setMessage("You have successfully signed up for this event!");
       })
